@@ -1,5 +1,7 @@
 # 📊 ChurnSense: Customer Churn Prediction
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customerchurnprediction-capstone.streamlit.app/)
+
 ChurnSense is a premium, interactive web application built with Streamlit that predicts customer churn using Machine Learning. It features a modern, dark-themed UI with an active sidebar control panel and dynamic visualizations.
 
 ## ✨ Features
