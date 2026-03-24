@@ -10,7 +10,7 @@ ChurnSense is a premium, interactive web application built with Streamlit that p
 - **Dynamic Updates**: Real-time predictions update instantly as you adjust customer metrics in the control panel.
 - **Key Business Drivers**: Automatically extracts and explains the primary factors influencing the churn probability tailored to the specific customer profile.
 - **Premium Dark Mode UI**: A stunning, modern interface with a glass-morphic feel, gradient accents, and responsive layout.
-- **Model Evaluation**: Transparent view into model performance metrics, confusion matrices, and feature importance.
+- **Model Evaluation**: Transparent view into model performance metrics, confusion matrices, and feature important.
 
 ##  Getting Started
 
