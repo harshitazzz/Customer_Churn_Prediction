@@ -15,8 +15,10 @@ from langchain.schema import Document
 from langchain.embeddings.base import Embeddings
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# ─── OpenRouter API Configuration ────────────────────────────────────────────
-OPENROUTER_API_KEY = "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"
+from dotenv import load_dotenv
+load_dotenv()
+
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
@@ -54,6 +56,7 @@ class AgentState(TypedDict):
     retrieved_strategies: str       # RAG-retrieved strategy text
     report: str                     # final structured output
     error: Optional[str]            # error message if any step fails
+    api_key: Optional[str]          # Dynamic API key from Streamlit UI
 
 
 # ─── Knowledge Base Loader ────────────────────────────────────────────────────
@@ -168,10 +171,15 @@ def generate_report(state: AgentState) -> AgentState:
     if state.get("error"):
         return state
 
+    api_key = state.get("api_key") or OPENROUTER_API_KEY
+    if not api_key or len(api_key) < 10:
+        state["error"] = "API Key Error: Please provide a valid OpenRouter API Key in the sidebar configuration."
+        return state
+
     try:
         llm = ChatOpenAI(
             model="anthropic/claude-3-haiku",
-            openai_api_key=OPENROUTER_API_KEY,
+            openai_api_key=api_key,
             openai_api_base=OPENROUTER_BASE_URL,
             temperature=0.15,  # Low temperature for factual, grounded output
             default_headers={"HTTP-Referer": "http://localhost:8501", "X-Title": "ChurnSense"}
