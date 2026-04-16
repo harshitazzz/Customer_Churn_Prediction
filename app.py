@@ -389,6 +389,7 @@ with st.sidebar:
         support = 1
         avg_spend = 0.0
         api_key_input = ""
+    else:
         st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:10px; letter-spacing:1px; text-transform:uppercase;">⚙️ Configuration</p>', unsafe_allow_html=True)
         model_choice = st.selectbox("ML Model", ["Logistic Regression", "Decision Tree"])
         api_key_input = st.text_input("OpenRouter API Key", type="password", value=os.environ.get("OPENROUTER_API_KEY", ""), help="Get your key at openrouter.ai (Required for LangGraph Agent)")
