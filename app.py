@@ -574,7 +574,7 @@ with tab3:
             <div style="color:#475569; font-size:0.9rem;">→</div>
             <div style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#60A5FA; font-weight:600;">② RAG Retrieve (FAISS)</div>
             <div style="color:#475569; font-size:0.9rem;">→</div>
-            <div style="background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#34D399; font-weight:600;">③ Generate Report (Gemini)</div>
+            <div style="background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#34D399; font-weight:600;">③ Generate Report</div>
             <div style="color:#475569; font-size:0.9rem;">→</div>
             <div style="background:rgba(244,114,182,0.2); border:1px solid rgba(244,114,182,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#F472B6; font-weight:600;">📄 Structured Output</div>
         </div>
