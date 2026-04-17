@@ -4,6 +4,7 @@ scikit-learn
 plotly
 joblib
 langchain
+langchain-core
 langgraph
 langchain-openai
 langchain-google-genai

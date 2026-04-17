@@ -11,8 +11,8 @@ import numpy as np
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import FAISS
-from langchain.schema import Document
-from langchain.embeddings.base import Embeddings
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from dotenv import load_dotenv
