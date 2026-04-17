@@ -469,7 +469,7 @@ if log_model is not None:
 # ═══════════════════════════════════════════════════════════════════════════════
 # TABS
 # ═══════════════════════════════════════════════════════════════════════════════
-tab1, tab2, tab3, tab4 = st.tabs(["🏠 Dashboard", "🔮 Predictions", "🤖 Agentic AI", "📈 Model Metrics"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["🏠 Dashboard", "🔮 Predictions", "🤖 Agentic AI", "📈 Model Metrics", "📐 LangGraph"])
 
 
 # ─── Tab 1: Dashboard ────────────────────────────────────────────────────────
@@ -582,163 +582,6 @@ with tab3:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-    # ── LangGraph Implementation Details ──
-    with st.expander("📐 **LangGraph Implementation Details**", expanded=False):
-
-        # --- Node Detail Cards ---
-        st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:12px; letter-spacing:0.5px; text-transform:uppercase;">Pipeline Node Breakdown</p>', unsafe_allow_html=True)
-
-        n1, n2, n3 = st.columns(3)
-        with n1:
-            st.markdown("""
-            <div style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.25); border-radius:14px; padding:20px; height:100%;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                    <div style="background:linear-gradient(135deg,#6366F1,#8B5CF6); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">1</div>
-                    <div style="font-size:0.95rem; font-weight:700; color:#A78BFA;">Analyze Risk</div>
-                </div>
-                <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
-                    <b style="color:#E2E8F0;">Input:</b> Customer profile + ML churn probability<br/>
-                    <b style="color:#E2E8F0;">Logic:</b> Classifies risk (High ≥60%, Med ≥35%, Low &lt;35%)<br/>
-                    <b style="color:#E2E8F0;">Output:</b> Risk level + driver descriptions<br/>
-                    <b style="color:#E2E8F0;">API Cost:</b> None (rule-based)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        with n2:
-            st.markdown("""
-            <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); border-radius:14px; padding:20px; height:100%;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                    <div style="background:linear-gradient(135deg,#3B82F6,#60A5FA); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">2</div>
-                    <div style="font-size:0.95rem; font-weight:700; color:#60A5FA;">RAG Retrieve</div>
-                </div>
-                <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
-                    <b style="color:#E2E8F0;">Vector Store:</b> FAISS (ephemeral)<br/>
-                    <b style="color:#E2E8F0;">Embeddings:</b> TF-IDF (256-dim, offline)<br/>
-                    <b style="color:#E2E8F0;">Retrieval:</b> Top-3 similarity search<br/>
-                    <b style="color:#E2E8F0;">API Cost:</b> None (local sklearn)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        with n3:
-            st.markdown("""
-            <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:14px; padding:20px; height:100%;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                    <div style="background:linear-gradient(135deg,#10B981,#34D399); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">3</div>
-                    <div style="font-size:0.95rem; font-weight:700; color:#34D399;">Generate Report</div>
-                </div>
-                <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
-                    <b style="color:#E2E8F0;">LLM:</b> Claude 3 Haiku (OpenRouter)<br/>
-                    <b style="color:#E2E8F0;">Temperature:</b> 0.15 (grounded)<br/>
-                    <b style="color:#E2E8F0;">Prompting:</b> Anti-hallucination<br/>
-                    <b style="color:#E2E8F0;">Output:</b> 4-section Markdown report
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("<br/>", unsafe_allow_html=True)
-
-        # --- State Flow Table ---
-        st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:8px; letter-spacing:0.5px; text-transform:uppercase;">AgentState — Typed State Management</p>', unsafe_allow_html=True)
-        st.caption("Every field is explicitly declared via Python's `TypedDict`. State flows across all nodes deterministically.")
-
-        state_df = pd.DataFrame({
-            "Field": ["customer_profile", "churn_probability", "churn_risk_level", "drivers", "retrieved_strategies", "report", "error"],
-            "Type": ["dict", "float", "str", "List[str]", "str", "str", "Optional[str]"],
-            "Set By": ["Streamlit UI", "ML Model", "Node ①", "Node ①", "Node ②", "Node ③", "Any (on failure)"],
-            "Description": [
-                "tenure, monthly_charges, total_charges, support_calls",
-                "0.0 – 1.0 probability from sklearn model",
-                "High Risk | Medium Risk | Low Risk",
-                "Human-readable risk driver descriptions",
-                "Top-3 strategies from FAISS similarity search",
-                "Final structured Markdown output",
-                "Error propagation — downstream nodes short-circuit"
-            ]
-        })
-        st.dataframe(state_df, hide_index=True, use_container_width=True)
-
-        st.markdown("<br/>", unsafe_allow_html=True)
-
-        # --- Knowledge Base Strategies Table ---
-        st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:8px; letter-spacing:0.5px; text-transform:uppercase;">RAG Knowledge Base — Retention Strategies</p>', unsafe_allow_html=True)
-        st.caption("6 expert-curated strategies with academic citations, retrieved via FAISS similarity search.")
-
-        kb_df = pd.DataFrame({
-            "Strategy": [
-                "Early Tenure Churn Prevention",
-                "High Monthly Charge Flight Risk",
-                "High Support Volume Dissatisfaction",
-                "Moderate Tenure Re-engagement",
-                "Long-Term Attrition Prevention",
-                "Low Engagement Silent Churn"
-            ],
-            "Target Profile": [
-                "Customers < 12 months",
-                "Customers > $80/mo",
-                "3+ support calls",
-                "12–24 months tenure",
-                "24+ months tenure",
-                "Inactive / disengaged"
-            ],
-            "Key Action": [
-                "30/60/90-day onboarding drip campaign",
-                "Plan Optimization Review + graceful downgrade",
-                "CSM escalation + Service Recovery Protocol",
-                "Year 2 Upgrade campaign + annual plan lock-in",
-                "VIP Advisory Board + Loyalty Upgrade",
-                "Re-engagement drip + gamified quick wins"
-            ],
-            "Source": [
-                "Harvard Business Review (2014)",
-                "McKinsey & Company (2019)",
-                "Gartner (2013)",
-                "Bain & Company (2020)",
-                "Reichheld — HBS Press",
-                "Nir Eyal — Hooked (2014)"
-            ]
-        })
-        st.dataframe(kb_df, hide_index=True, use_container_width=True)
-
-        st.markdown("<br/>", unsafe_allow_html=True)
-
-        # --- Tech Stack Summary ---
-        st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:8px; letter-spacing:0.5px; text-transform:uppercase;">Agentic AI Technology Stack</p>', unsafe_allow_html=True)
-
-        tech_df = pd.DataFrame({
-            "Component": ["Agent Framework", "Vector Store", "Embeddings", "LLM", "Knowledge Base", "State Management"],
-            "Technology": ["LangGraph (StateGraph)", "FAISS (Facebook AI)", "TF-IDF (sklearn, 256-dim)", "Claude 3 Haiku (OpenRouter)", "retention_strategies.txt", "Python TypedDict"],
-            "Purpose": [
-                "Deterministic multi-node workflow orchestration",
-                "Similarity search for RAG retrieval",
-                "Offline embeddings — zero API cost",
-                "Structured report generation (temp=0.15)",
-                "6 expert strategies with academic citations",
-                "Typed state propagation across all nodes"
-            ]
-        })
-        st.dataframe(tech_df, hide_index=True, use_container_width=True)
-
-        # --- Graph Code Preview ---
-        st.markdown("<br/>", unsafe_allow_html=True)
-        st.markdown('<p style="font-size:0.85rem; font-weight:700; color:#A78BFA; margin-bottom:8px; letter-spacing:0.5px; text-transform:uppercase;">LangGraph — Compiled StateGraph</p>', unsafe_allow_html=True)
-        st.code("""
-def build_retention_agent():
-    workflow = StateGraph(AgentState)
-
-    # Register nodes
-    workflow.add_node("analyze_risk", analyze_risk)
-    workflow.add_node("retrieve_strategies", retrieve_strategies)
-    workflow.add_node("generate_report", generate_report)
-
-    # Wire edges (linear pipeline)
-    workflow.set_entry_point("analyze_risk")
-    workflow.add_edge("analyze_risk", "retrieve_strategies")
-    workflow.add_edge("retrieve_strategies", "generate_report")
-    workflow.add_edge("generate_report", END)
-
-    return workflow.compile()
-        """, language="python")
 
     if log_model is None:
         st.error("Model artifacts not found. Please run `python3 src/train_model.py` first.")
@@ -857,3 +700,183 @@ with tab4:
         - **Frequent support calls** signal deep dissatisfaction preceding departure.
         - **Algorithm Details:** Logistic Regression generalises better on test data. The Decision Tree captures non-linear patterns but may overfit without depth constraints.
         """, icon="🧠")
+
+
+# ─── Tab 5: LangGraph Implementation ─────────────────────────────────────────
+with tab5:
+    st.markdown('<p class="sec-title" style="margin-top:0;">📐 LangGraph Implementation</p>', unsafe_allow_html=True)
+    st.caption("Architecture, state management, and node-level breakdown of the agentic retention pipeline.")
+
+    # --- Pipeline Diagram ---
+    st.markdown("""
+    <div class="card" style="padding:16px 20px;">
+        <div style="font-size:0.78rem; font-weight:600; color:#A78BFA; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Workflow Pipeline</div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div style="background:rgba(99,102,241,0.2); border:1px solid rgba(99,102,241,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#A78BFA; font-weight:600;">① Analyze Risk</div>
+            <div style="color:#475569; font-size:0.9rem;">→</div>
+            <div style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#60A5FA; font-weight:600;">② RAG Retrieve (FAISS)</div>
+            <div style="color:#475569; font-size:0.9rem;">→</div>
+            <div style="background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#34D399; font-weight:600;">③ Generate Report</div>
+            <div style="color:#475569; font-size:0.9rem;">→</div>
+            <div style="background:rgba(244,114,182,0.2); border:1px solid rgba(244,114,182,0.3); border-radius:8px; padding:8px 14px; font-size:0.8rem; color:#F472B6; font-weight:600;">📄 Structured Output</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # --- Node Detail Cards ---
+    st.markdown('<p class="sec-title">Pipeline Node Breakdown</p>', unsafe_allow_html=True)
+
+    n1, n2, n3 = st.columns(3)
+    with n1:
+        st.markdown("""
+        <div style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.25); border-radius:14px; padding:20px; height:100%;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <div style="background:linear-gradient(135deg,#6366F1,#8B5CF6); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">1</div>
+                <div style="font-size:0.95rem; font-weight:700; color:#A78BFA;">Analyze Risk</div>
+            </div>
+            <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
+                <b style="color:#E2E8F0;">Input:</b> Customer profile + ML churn probability<br/>
+                <b style="color:#E2E8F0;">Logic:</b> Classifies risk (High ≥60%, Med ≥35%, Low &lt;35%)<br/>
+                <b style="color:#E2E8F0;">Output:</b> Risk level + driver descriptions<br/>
+                <b style="color:#E2E8F0;">API Cost:</b> None (rule-based)
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with n2:
+        st.markdown("""
+        <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); border-radius:14px; padding:20px; height:100%;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <div style="background:linear-gradient(135deg,#3B82F6,#60A5FA); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">2</div>
+                <div style="font-size:0.95rem; font-weight:700; color:#60A5FA;">RAG Retrieve</div>
+            </div>
+            <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
+                <b style="color:#E2E8F0;">Vector Store:</b> FAISS (ephemeral)<br/>
+                <b style="color:#E2E8F0;">Embeddings:</b> TF-IDF (256-dim, offline)<br/>
+                <b style="color:#E2E8F0;">Retrieval:</b> Top-3 similarity search<br/>
+                <b style="color:#E2E8F0;">API Cost:</b> None (local sklearn)
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with n3:
+        st.markdown("""
+        <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:14px; padding:20px; height:100%;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <div style="background:linear-gradient(135deg,#10B981,#34D399); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:0.85rem;">3</div>
+                <div style="font-size:0.95rem; font-weight:700; color:#34D399;">Generate Report</div>
+            </div>
+            <div style="font-size:0.78rem; color:#94A3B8; line-height:1.6;">
+                <b style="color:#E2E8F0;">LLM:</b> Claude 3 Haiku (OpenRouter)<br/>
+                <b style="color:#E2E8F0;">Temperature:</b> 0.15 (grounded)<br/>
+                <b style="color:#E2E8F0;">Prompting:</b> Anti-hallucination<br/>
+                <b style="color:#E2E8F0;">Output:</b> 4-section Markdown report
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # --- State Flow Table ---
+    st.markdown('<p class="sec-title">AgentState — Typed State Management</p>', unsafe_allow_html=True)
+    st.caption("Every field is explicitly declared via Python's `TypedDict`. State flows across all nodes deterministically.")
+
+    state_df = pd.DataFrame({
+        "Field": ["customer_profile", "churn_probability", "churn_risk_level", "drivers", "retrieved_strategies", "report", "error"],
+        "Type": ["dict", "float", "str", "List[str]", "str", "str", "Optional[str]"],
+        "Set By": ["Streamlit UI", "ML Model", "Node ①", "Node ①", "Node ②", "Node ③", "Any (on failure)"],
+        "Description": [
+            "tenure, monthly_charges, total_charges, support_calls",
+            "0.0 – 1.0 probability from sklearn model",
+            "High Risk | Medium Risk | Low Risk",
+            "Human-readable risk driver descriptions",
+            "Top-3 strategies from FAISS similarity search",
+            "Final structured Markdown output",
+            "Error propagation — downstream nodes short-circuit"
+        ]
+    })
+    st.dataframe(state_df, hide_index=True, use_container_width=True)
+
+    # --- Knowledge Base Strategies Table ---
+    st.markdown('<p class="sec-title">RAG Knowledge Base — Retention Strategies</p>', unsafe_allow_html=True)
+    st.caption("6 expert-curated strategies with academic citations, retrieved via FAISS similarity search.")
+
+    kb_df = pd.DataFrame({
+        "Strategy": [
+            "Early Tenure Churn Prevention",
+            "High Monthly Charge Flight Risk",
+            "High Support Volume Dissatisfaction",
+            "Moderate Tenure Re-engagement",
+            "Long-Term Attrition Prevention",
+            "Low Engagement Silent Churn"
+        ],
+        "Target Profile": [
+            "Customers < 12 months",
+            "Customers > $80/mo",
+            "3+ support calls",
+            "12–24 months tenure",
+            "24+ months tenure",
+            "Inactive / disengaged"
+        ],
+        "Key Action": [
+            "30/60/90-day onboarding drip campaign",
+            "Plan Optimization Review + graceful downgrade",
+            "CSM escalation + Service Recovery Protocol",
+            "Year 2 Upgrade campaign + annual plan lock-in",
+            "VIP Advisory Board + Loyalty Upgrade",
+            "Re-engagement drip + gamified quick wins"
+        ],
+        "Source": [
+            "Harvard Business Review (2014)",
+            "McKinsey & Company (2019)",
+            "Gartner (2013)",
+            "Bain & Company (2020)",
+            "Reichheld — HBS Press",
+            "Nir Eyal — Hooked (2014)"
+        ]
+    })
+    st.dataframe(kb_df, hide_index=True, use_container_width=True)
+
+    # --- Tech Stack Summary ---
+    st.markdown('<p class="sec-title">Agentic AI Technology Stack</p>', unsafe_allow_html=True)
+
+    tech_df = pd.DataFrame({
+        "Component": ["Agent Framework", "Vector Store", "Embeddings", "LLM", "Knowledge Base", "State Management"],
+        "Technology": ["LangGraph (StateGraph)", "FAISS (Facebook AI)", "TF-IDF (sklearn, 256-dim)", "Claude 3 Haiku (OpenRouter)", "retention_strategies.txt", "Python TypedDict"],
+        "Purpose": [
+            "Deterministic multi-node workflow orchestration",
+            "Similarity search for RAG retrieval",
+            "Offline embeddings — zero API cost",
+            "Structured report generation (temp=0.15)",
+            "6 expert strategies with academic citations",
+            "Typed state propagation across all nodes"
+        ]
+    })
+    st.dataframe(tech_df, hide_index=True, use_container_width=True)
+
+    # --- Graph Code Preview ---
+    st.markdown('<p class="sec-title">LangGraph — Compiled StateGraph</p>', unsafe_allow_html=True)
+    st.code("""
+def build_retention_agent():
+    workflow = StateGraph(AgentState)
+
+    # Register nodes
+    workflow.add_node("analyze_risk", analyze_risk)
+    workflow.add_node("retrieve_strategies", retrieve_strategies)
+    workflow.add_node("generate_report", generate_report)
+
+    # Wire edges (linear pipeline)
+    workflow.set_entry_point("analyze_risk")
+    workflow.add_edge("analyze_risk", "retrieve_strategies")
+    workflow.add_edge("retrieve_strategies", "generate_report")
+    workflow.add_edge("generate_report", END)
+
+    return workflow.compile()
+    """, language="python")
+
+    st.markdown('<p class="sec-title">Design Decisions</p>', unsafe_allow_html=True)
+    st.info("""
+    **Why these architectural choices?**
+    - **LangGraph over raw LangChain:** Explicit `StateGraph` with typed state provides deterministic control, debuggability, and clear node boundaries.
+    - **TF-IDF over API-based embeddings:** Zero cost, fully offline — only the report generation step uses an external API.
+    - **Ephemeral FAISS per request:** Knowledge base is small (6 strategies); rebuilding the index per request ensures freshness without a persistent vector DB.
+    - **Claude 3 Haiku via OpenRouter:** Free-tier compatible, fast inference (~1-2s), high-quality structured output.
+    - **Anti-hallucination prompting:** Low temperature (0.15) + explicit grounding instructions constrain the LLM to only reference provided data.
+    - **Error propagation via state:** `error` field in `AgentState` enables graceful degradation — failed nodes don't crash the pipeline.
+    """, icon="🧠")
