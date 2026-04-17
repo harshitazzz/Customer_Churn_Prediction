@@ -171,7 +171,14 @@ def generate_report(state: AgentState) -> AgentState:
     if state.get("error"):
         return state
 
+    # Resolve API key: state dict → st.secrets (Streamlit Cloud) → os.getenv (.env)
     api_key = state.get("api_key") or OPENROUTER_API_KEY
+    if not api_key or len(api_key) < 10:
+        try:
+            import streamlit as _st
+            api_key = _st.secrets.get("OPENROUTER_API_KEY")
+        except Exception:
+            pass
     if not api_key or len(api_key) < 10:
         state["error"] = "API Key Error: Please provide a valid OpenRouter API Key in the sidebar configuration."
         return state
