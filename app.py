@@ -590,6 +590,13 @@ with tab3:
             from src.agent import build_retention_agent
 
             agent = build_retention_agent()
+            # Retrieve API key: st.secrets (Streamlit Cloud) → os.getenv (local .env)
+            _api_key = None
+            try:
+                _api_key = st.secrets["OPENROUTER_API_KEY"]
+            except (KeyError, FileNotFoundError):
+                _api_key = os.getenv("OPENROUTER_API_KEY")
+
             initial_state = {
                 "customer_profile": {
                     "tenure": tenure,
@@ -604,6 +611,7 @@ with tab3:
                 "retrieved_strategies": "",
                 "report": "",
                 "error": None,
+                "api_key": _api_key,
             }
 
             # Generator for typewriter effect
